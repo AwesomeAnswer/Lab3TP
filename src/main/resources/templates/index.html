@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Docking Game</title>
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+</head>
+<body>
+<h1>Space Docking Game</h1>
+<button onclick="window.location.href='/operator'">Operator</button>
+<button onclick="window.location.href='/ship'">Pilot</button>
+<br>
+<button onclick="exportState()">Export State</button>
+<input type="file" id="fileInput" style="display:none" onchange="importState(event)">
+<button onclick="document.getElementById('fileInput').click()">Import State</button>
+<script src="/js/index.js"></script>
+</body>
+</html>

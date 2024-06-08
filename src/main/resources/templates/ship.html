@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilot Console</title>
+    <link rel="stylesheet" type="text/css" href="/css/ship.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<h1>Pilot Console</h1>
+<div id="controls">
+    <button onclick="moveShip(0, 3)">Move Up</button>
+    <button onclick="moveShip(0, -3)">Move Down</button>
+    <button onclick="moveShip(-3, 0)">Move Left</button>
+    <button onclick="moveShip(3, 0)">Move Right</button>
+    <button onclick="rotateShip(3)">Rotate Right</button>
+    <button onclick="rotateShip(-3)">Rotate Left</button>
+</div>
+<div id="messageBox">
+    <p>Message from operator: <span id="operatorMessage">N/A</span></p>
+</div>
+
+
+    <script src="/js/ship.js"></script>
+
+</body>
+</html>

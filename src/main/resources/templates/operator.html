@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operator Console</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/operator.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<div id="canvasContainer">
+    <canvas id="shipCanvas" width="1200" height="800"></canvas>
+</div>
+<div id="controls">
+    <p>Ship Position: <span id="position">N/A</span></p>
+    <p>Ship Rotation: <span id="rotation">N/A</span></p>
+    <input type="text" id="message" placeholder="Send message to pilot">
+    <button onclick="sendMessage()">Send</button>
+    <div id="status"></div>
+</div>
+
+<script src="/js/operator.js"></script>
+</body>
+</html>
