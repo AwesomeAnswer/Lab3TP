@@ -3,13 +3,12 @@ package com.example.spacegame;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.Random;
 
 @Component
 public class Game {
-    private AtomicReference<Ship> ship = new AtomicReference<>(new Ship());
-    private AtomicReference<Station> station = new AtomicReference<>(new Station());
+    private Ship ship = new Ship();
+    private Station station = new Station();
 
     @PostConstruct
     public void init() {
@@ -18,31 +17,28 @@ public class Game {
 
     public void resetGame() {
         Random random = new Random();
-        ship.get().setX(random.nextInt(500) - 250);
-        ship.get().setY(random.nextInt(300) - 150);
-        ship.get().setRotation(random.nextInt(360));
+        ship.setX(random.nextInt(500) - 250);
+        ship.setY(random.nextInt(300) - 150);
+        ship.setRotation(random.nextInt(360));
 
-        station.get().setX(random.nextInt(500) - 250);
-        station.get().setY(random.nextInt(300) - 150);
-        station.get().setRotation(random.nextInt(360));
+        station.setX(random.nextInt(500) - 250);
+        station.setY(random.nextInt(300) - 150);
+        station.setRotation(random.nextInt(360));
     }
 
     public Ship getShip() {
-        return ship.get();
+        return ship;
     }
 
     public Station getStation() {
-        return station.get();
+        return station;
     }
 
     public void updateShipPosition(double x, double y, double rotation) {
-        ship.updateAndGet(s -> {
-            s.setX(x);
-            s.setY(y);
-            s.setRotation(rotation);
-            checkDocking(s, station.get());
-            return s;
-        });
+        ship.setX(x);
+        ship.setY(y);
+        ship.setRotation(rotation);
+        checkDocking(ship, station);
     }
 
     private void checkDocking(Ship ship, Station station) {
@@ -54,33 +50,12 @@ public class Game {
     }
 
     public GameState exportState() {
-        return new GameState(ship.get(), station.get());
+        return new GameState(ship, station);
     }
 
-    public void importState(GameState state) throws IllegalArgumentException {
-        validateState(state);
-        ship.set(state.getShip());
-        station.set(state.getStation());
-    }
-
-    private void validateState(GameState state) throws IllegalArgumentException {
-        if (state.getShip() == null || state.getStation() == null) {
-            throw new IllegalArgumentException("Invalid game state: ship or station is null");
-        }
-        validateCoordinates(state.getShip().getX(), state.getShip().getY(), state.getShip().getRotation());
-        validateCoordinates(state.getStation().getX(), state.getStation().getY(), state.getStation().getRotation());
-    }
-
-    private void validateCoordinates(double x, double y, double rotation) throws IllegalArgumentException {
-        if (x < -250 || x > 250) {
-            throw new IllegalArgumentException("Invalid coordinate: x must be between -250 and 250");
-        }
-        if (y < -150 || y > 150) {
-            throw new IllegalArgumentException("Invalid coordinate: y must be between -150 and 150");
-        }
-        if (rotation < 0 || rotation >= 360) {
-            throw new IllegalArgumentException("Invalid rotation: rotation must be between 0 and 359");
-        }
+    public void importState(GameState state) {
+        ship = state.getShip();
+        station = state.getStation();
     }
 
     public static class MoveMessage {

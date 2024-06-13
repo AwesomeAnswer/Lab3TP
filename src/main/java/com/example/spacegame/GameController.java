@@ -1,22 +1,31 @@
 package com.example.spacegame;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.InputStream;
 
 @Controller
 @RequestMapping("/")
 public class GameController {
 
-private final Game game;
+    private final Game game;
+    private final ObjectMapper objectMapper;
+    private final Schema schema;
 
-    public GameController(Game game) {
+    public GameController(Game game, ObjectMapper objectMapper) throws Exception {
         this.game = game;
+        this.objectMapper = objectMapper;
+        this.schema = loadSchema();
     }
 
     @GetMapping
@@ -72,10 +81,24 @@ private final Game game;
     @ResponseBody
     public String importState(@RequestBody Game.GameState state) {
         try {
+            validateState(state);
             game.importState(state);
             return "Import successful";
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return "Import failed: " + e.getMessage();
         }
+    }
+
+    private void validateState(Game.GameState state) throws Exception {
+        String stateJsonString = objectMapper.writeValueAsString(state);
+        JSONObject stateJson = new JSONObject(stateJsonString);
+
+        schema.validate(stateJson);
+    }
+
+    private Schema loadSchema() throws Exception {
+        InputStream schemaStream = new ClassPathResource("game-state-schema.json").getInputStream();
+        JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream));
+        return SchemaLoader.load(rawSchema);
     }
 }
